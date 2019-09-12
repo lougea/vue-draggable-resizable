@@ -2,9 +2,10 @@
   <div>
     <video
       ref="video"
-      src="~assets/video/video.mp4"
+      src="~assets/video/water.mp4"
       @loadeddata="setDuration"
       @timeupdate="time()"
+      @click="videoPlay()"
     ></video>
     <p>{{ totalSec }} seconds</p>
     <div class="flex">
@@ -96,6 +97,7 @@ export default {
       this.width = width
       this.height = height
       this.total = (TOTAL_WIDTH - (TOTAL_WIDTH - this.width)) / TOTAL_WIDTH
+      this.$refs.video.currentTime = this.endSec
       this.$refs.video.currentTime = this.startSec
       this.startEnd()
     },
@@ -104,6 +106,7 @@ export default {
       this.x = x
       this.y = y
       this.$refs.video.currentTime = this.startSec
+
       this.startEnd()
     },
     startEnd(width) {
@@ -113,8 +116,14 @@ export default {
     },
     videoPlay() {
       if (this.$refs.video.paused === true) {
+        if (this.$refs.video.currentTime >= this.endSec) {
+          this.$refs.video.currentTime = this.startSec
+        }
+        if (this.$refs.video.currentTime < this.startSec) {
+          this.$refs.video.currentTime = this.startSec
+        }
         this.$refs.video.play()
-      } else if (this.$refs.video.paused === false) {
+      } else {
         this.$refs.video.pause()
       }
     },
@@ -122,9 +131,11 @@ export default {
       console.log(this.$refs.video.currentTime)
       if (this.$refs.video.currentTime >= this.endSec) {
         this.$refs.video.pause()
-        this.$refs.video.currentTime = this.start
       }
     }
+    // onResizstop(width) {
+    //   this.$refs.video.currentTime = this.startSec
+    // }
   }
 }
 </script>
