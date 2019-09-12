@@ -1,10 +1,10 @@
 <template>
   <div>
     <video
-      id="video"
       ref="video"
       src="~assets/video/video.mp4"
       @loadeddata="setDuration"
+      @timeupdate="time()"
     ></video>
     <p>{{ totalSec }} seconds</p>
     <div class="flex">
@@ -60,7 +60,8 @@ export default {
       start: 0,
       end: INIT_WIDTH / TOTAL_WIDTH,
       totalWidth: TOTAL_WIDTH,
-      duration: 0
+      duration: 0,
+      currentTime: 0
     }
   },
   computed: {
@@ -87,6 +88,7 @@ export default {
   methods: {
     setDuration() {
       this.duration = this.$refs.video.duration
+      this.currentTime = this.$refs.video.currentTime
     },
     onResize(x, y, width, height) {
       this.x = x
@@ -94,14 +96,18 @@ export default {
       this.width = width
       this.height = height
       this.total = (TOTAL_WIDTH - (TOTAL_WIDTH - this.width)) / TOTAL_WIDTH
+      this.$refs.video.currentTime = this.startSec
       this.startEnd()
     },
     onDrag(x, y) {
+      this.$refs.video.pause()
       this.x = x
       this.y = y
+      this.$refs.video.currentTime = this.startSec
       this.startEnd()
     },
     startEnd(width) {
+      this.$refs.video.pause()
       this.start = this.x / TOTAL_WIDTH
       this.end = (this.width + this.x) / TOTAL_WIDTH
     },
@@ -110,7 +116,13 @@ export default {
         this.$refs.video.play()
       } else if (this.$refs.video.paused === false) {
         this.$refs.video.pause()
-        console.log(this.$refs.video.pause)
+      }
+    },
+    time() {
+      console.log(this.$refs.video.currentTime)
+      if (this.$refs.video.currentTime >= this.endSec) {
+        this.$refs.video.pause()
+        this.$refs.video.currentTime = this.start
       }
     }
   }
