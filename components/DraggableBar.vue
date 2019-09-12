@@ -1,16 +1,23 @@
 <template>
   <div>
-    <video id="video" src="~assets/video/water.mp4"></video>
-    <p>{{ totalPercent }} %</p>
+    <video
+      id="video"
+      ref="video"
+      src="~assets/video/video.mp4"
+      @loadeddata="setDuration"
+    ></video>
+    <p>{{ totalSec }} seconds</p>
     <div class="flex">
       <button
         class="button play border border-bg-black flex-1/2 m-2"
-        @click="videoPlay"
+        @click="videoPlay()"
       ></button>
       <div
         id="parent"
         class="flex-2/3"
-        style="height: 50px; width: 600px; outline: 3px solid #F0E68C; position: relative;"
+        :style="
+          `height: 50px; width: ${totalWidth}px; outline: 3px solid #F0E68C; position: relative;`
+        "
       >
         <vue-draggable-resizable
           :w="width"
@@ -31,8 +38,8 @@
     </div>
 
     <div class="time">
-      <span> Start : {{ startPercent }} %</span>
-      <span> End : {{ endPercent }} %</span>
+      <span> Start : {{ startSec }} seconds</span>
+      <span> End : {{ endSec }}seconds</span>
     </div>
   </div>
 </template>
@@ -53,7 +60,7 @@ export default {
       start: 0,
       end: INIT_WIDTH / TOTAL_WIDTH,
       totalWidth: TOTAL_WIDTH,
-      video: {}
+      duration: 0
     }
   },
   computed: {
@@ -61,18 +68,26 @@ export default {
       return parseFloat(this.total * 100).toFixed(2)
     },
     startPercent() {
-      const startPercent = parseFloat(this.start * 100).toFixed(2)
-      return startPercent
+      return parseFloat(this.start * 100).toFixed(2)
     },
     endPercent() {
       return parseFloat(this.end * 100).toFixed(2)
+    },
+    totalSec() {
+      return parseFloat(this.total * this.duration).toFixed(2)
+    },
+    startSec() {
+      return parseFloat(this.start * this.duration).toFixed(2)
+    },
+    endSec() {
+      return parseFloat(this.end * this.duration).toFixed(2)
     }
   },
-  mounted() {
-    this.video = document.getElementById('video')
-    console.log(this.video)
-  },
+  mounted() {},
   methods: {
+    setDuration() {
+      this.duration = this.$refs.video.duration
+    },
     onResize(x, y, width, height) {
       this.x = x
       this.y = y
@@ -91,7 +106,12 @@ export default {
       this.end = (this.width + this.x) / TOTAL_WIDTH
     },
     videoPlay() {
-      this.video = document.getElementById('video')
+      if (this.$refs.video.paused === true) {
+        this.$refs.video.play()
+      } else if (this.$refs.video.paused === false) {
+        this.$refs.video.pause()
+        console.log(this.$refs.video.pause)
+      }
     }
   }
 }
