@@ -1,50 +1,59 @@
 <template>
-  <div class="VueToNuxtLogo">
+  <div>
+    <video id="video" src="~assets/video/water.mp4"></video>
     <p>{{ totalPercent }} %</p>
-    <div
-      id="parent"
-      style="height: 50px; width: 600px; outline: 3px solid #F0E68C; position: relative;"
-    >
-      <vue-draggable-resizable
-        :w="100"
-        :h="50"
-        :x="0"
-        :y="0"
-        :axis="axis"
-        :handles="['ml', 'mr']"
-        :parent="true"
-        :active="true"
-        :prevent-deactivation="true"
-        @dragging="onDrag"
-        @resizing="onResize"
+    <div class="flex">
+      <button
+        class="button play border border-bg-black flex-1/2 m-2"
+        @click="videoPlay"
+      ></button>
+      <div
+        id="parent"
+        class="flex-2/3"
+        style="height: 50px; width: 600px; outline: 3px solid #F0E68C; position: relative;"
       >
-        <div class="child"></div>
-      </vue-draggable-resizable>
+        <vue-draggable-resizable
+          :w="width"
+          :h="50"
+          :x="0"
+          :y="0"
+          :axis="axis"
+          :handles="['ml', 'mr']"
+          :parent="true"
+          :active="true"
+          :prevent-deactivation="true"
+          @dragging="onDrag"
+          @resizing="onResize"
+        >
+          <div class="child"></div>
+        </vue-draggable-resizable>
+      </div>
     </div>
+
     <div class="time">
       <span> Start : {{ startPercent }} %</span>
       <span> End : {{ endPercent }} %</span>
     </div>
-
-    <br />
   </div>
 </template>
 
 <script>
+const TOTAL_WIDTH = 400
+const INIT_WIDTH = 100
 export default {
   components: {},
   data() {
     return {
-      width: 0,
+      width: INIT_WIDTH,
       height: 0,
       x: 0,
       y: 0,
       axis: 'x',
-      a: 0,
-      b: 0,
-      total: 100 / 600,
+      total: INIT_WIDTH / TOTAL_WIDTH,
       start: 0,
-      end: 0
+      end: INIT_WIDTH / TOTAL_WIDTH,
+      totalWidth: TOTAL_WIDTH,
+      video: {}
     }
   },
   computed: {
@@ -57,51 +66,69 @@ export default {
     },
     endPercent() {
       return parseFloat(this.end * 100).toFixed(2)
-    },
-    widthParent() {
-      return document.getElementById('parent').clientWidth
     }
   },
-  mounted() {},
+  mounted() {
+    this.video = document.getElementById('video')
+    console.log(this.video)
+  },
   methods: {
     onResize(x, y, width, height) {
       this.x = x
       this.y = y
       this.width = width
       this.height = height
-
-      this.a = this.widthParent - this.width
-      this.b = this.widthParent - this.a
-      this.total = this.b / this.widthParent
-
-      this.start = this.x / this.widthParent
-      this.end = (this.width + this.x) / this.widthParent
-      console.log()
+      this.total = (TOTAL_WIDTH - (TOTAL_WIDTH - this.width)) / TOTAL_WIDTH
+      this.startEnd()
     },
     onDrag(x, y) {
       this.x = x
       this.y = y
-      this.start = this.x / this.widthParent
-      this.end = (this.width + this.x) / this.widthParent
+      this.startEnd()
+    },
+    startEnd(width) {
+      this.start = this.x / TOTAL_WIDTH
+      this.end = (this.width + this.x) / TOTAL_WIDTH
+    },
+    videoPlay() {
+      this.video = document.getElementById('video')
     }
   }
 }
 </script>
 <style>
+.button.play {
+  box-sizing: border-box;
+  margin-right: 20px;
+  width: 30px;
+  height: 30px;
+  border-style: solid;
+  border-color: #202020;
+  border-width: 20px 0px 20px 40px;
+  border-color: transparent transparent transparent #202020;
+}
+.button.play:hover {
+  border-color: transparent transparent transparent #f0e68c;
+}
+
 .time {
   border-bottom: 1px solid black;
 }
 
 .child {
-  outline: 3px solid red;
-  background-color: blueviolet;
+  outline: 3px solid rgba(73, 72, 72, 0.883);
+  background-color: rgba(130, 126, 134, 0.767);
   height: 100%;
   width: 100%;
 }
 
+.child:hover {
+  outline: 3px solid red;
+}
+
 .handle {
   position: absolute;
-  background-color: pink;
+  background-color: black;
   border: 1px solid black;
   border-radius: 50%;
   height: 14px;
@@ -164,10 +191,8 @@ export default {
   cursor: se-resize;
 }
 
-.handle-tl:hover,
-.handle-tr:hover,
-.handle-bl:hover,
-.handle-br:hover {
+.handle-ml:hover,
+.handle-mr:hover {
   background-color: red;
   transform: scale(1.4);
 }
