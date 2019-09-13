@@ -23,7 +23,7 @@ export default {
       this.duration = this.$refs.video.duration
       this.currentTime = this.$refs.video.currentTime
       this.$emit('duration', this.duration)
-      //   this.$emit('currentTime', this.currentTime)
+      this.$emit('currentTime', this.currentTime)
     },
     playPause: function() {
       if (this.$refs.video.paused === true) {

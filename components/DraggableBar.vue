@@ -21,9 +21,9 @@
         <div class="child"></div>
       </vue-draggable-resizable>
     </div>
-    <p>TOTAL : {{ totalPercent }} %</p>
-    <p>Start: {{ startPercent }} %</p>
-    <p>End: {{ endPercent }} %</p>
+    <p>TOTAL : {{ totalSec }} sec</p>
+    <p>Start: {{ startSec }} sec</p>
+    <p>End: {{ endSec }}sec</p>
   </div>
 </template>
 
@@ -31,6 +31,16 @@
 const TOTAL_WIDTH = 600
 const INIT_WIDTH = 100
 export default {
+  props: {
+    duration: {
+      type: Number,
+      default: null
+    },
+    currentTime: {
+      type: Number,
+      default: null
+    }
+  },
   data: function() {
     return {
       axis: 'x',
@@ -40,7 +50,7 @@ export default {
       y: 0,
       total: INIT_WIDTH / TOTAL_WIDTH,
       totalWidth: TOTAL_WIDTH,
-      start: 0,
+      start: this.currentTime,
       end: 0
     }
   },
@@ -53,6 +63,15 @@ export default {
     },
     endPercent() {
       return parseFloat(this.end * 100).toFixed(2)
+    },
+    totalSec() {
+      return parseFloat(this.total * this.duration).toFixed(2)
+    },
+    startSec() {
+      return parseFloat(this.start * this.duration).toFixed(2)
+    },
+    endSec() {
+      return parseFloat(this.end * this.duration).toFixed(2)
     }
   },
   mounted() {

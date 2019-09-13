@@ -1,7 +1,8 @@
 <template>
   <div class="m-8">
-    <Video @duration="duration = $event" />
-    <DraggableBar />
+    <Video @duration="duration = $event" @currentTime="currenTime = $event" />
+    <DraggableBar :duration="duration" :current-time="currentTime" />
+    <button @click="test()">test</button>
   </div>
 </template>
 
@@ -16,10 +17,16 @@ export default {
   },
   data() {
     return {
-      duration: 0
+      duration: 0,
+      currentTime: 0
     }
   },
-  methods: {}
+  methods: {
+    test() {
+      console.log(this.duration)
+      console.log(this.currentTime)
+    }
+  }
 }
 </script>
 
