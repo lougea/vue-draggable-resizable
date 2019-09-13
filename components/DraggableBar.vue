@@ -1,7 +1,9 @@
 <template>
   <div>
     <div
-      style="height: 50px; width: 600px; outline: 1px solid red; position: relative"
+      :style="
+        `height: 50px; width: ${totalWidth}px; outline: 3px solid #F0E68C; position: relative;`
+      "
     >
       <vue-draggable-resizable
         :w="width"
@@ -19,19 +21,42 @@
         <div class="child"></div>
       </vue-draggable-resizable>
     </div>
-    <p>X: {{ x }} / Y: {{ y }} - Width: {{ width }} / Height: {{ height }}</p>
+    <p>TOTAL : {{ totalPercent }} %</p>
+    <p>Start: {{ startPercent }} %</p>
+    <p>End: {{ endPercent }} %</p>
   </div>
 </template>
 
 <script>
+const TOTAL_WIDTH = 600
+const INIT_WIDTH = 100
 export default {
   data: function() {
     return {
-      width: 0,
+      axis: 'x',
+      width: INIT_WIDTH,
       height: 0,
       x: 0,
-      y: 0
+      y: 0,
+      total: INIT_WIDTH / TOTAL_WIDTH,
+      totalWidth: TOTAL_WIDTH,
+      start: 0,
+      end: 0
     }
+  },
+  computed: {
+    totalPercent() {
+      return parseFloat(this.total * 100).toFixed(2)
+    },
+    startPercent() {
+      return parseFloat(this.start * 100).toFixed(2)
+    },
+    endPercent() {
+      return parseFloat(this.end * 100).toFixed(2)
+    }
+  },
+  mounted() {
+    console.log('yo')
   },
   methods: {
     onResize: function(x, y, width, height) {
@@ -39,10 +64,17 @@ export default {
       this.y = y
       this.width = width
       this.height = height
+      this.total = (TOTAL_WIDTH - (TOTAL_WIDTH - width)) / TOTAL_WIDTH
+      this.startEnd()
     },
     onDrag: function(x, y) {
       this.x = x
       this.y = y
+      this.startEnd()
+    },
+    startEnd: function() {
+      this.start = this.x / TOTAL_WIDTH
+      this.end = (this.width + this.x) / TOTAL_WIDTH
     }
   }
 }
