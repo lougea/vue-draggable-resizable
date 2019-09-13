@@ -36,14 +36,20 @@ export default {
     },
     endSec() {
       return parseFloat(this.end * this.duration).toFixed(2)
+    },
+    total() {
+      return this.endSec - this.startSec
     }
   },
   watch: {
+    start: function(value, oldvalue) {
+      this.$refs.video.currentTime = this.startSec
+      if (this.total === this.total && value <= oldvalue) {
+        this.$refs.video.currentTime = this.endSec
+      }
+    },
     end: function() {
       this.$refs.video.currentTime = this.endSec
-    },
-    start: function() {
-      this.$refs.video.currentTime = this.startSec
     }
   },
   methods: {

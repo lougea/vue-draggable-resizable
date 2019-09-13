@@ -2,7 +2,6 @@
   <div class="m-8">
     <Video :end="end" :start="start" />
     <DraggableBar @end="end = $event" @start="start = $event" />
-    <button @click="test()">test</button>
   </div>
 </template>
 
