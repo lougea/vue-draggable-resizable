@@ -66,8 +66,11 @@ export default {
     startEnd: function() {
       this.start = this.x / TOTAL_WIDTH
       this.end = (this.width + this.x) / TOTAL_WIDTH
-      this.$emit('start', this.start)
-      this.$emit('end', this.end)
+      this.$emit('interval', {
+        start: this.start,
+        end: this.end,
+        total: parseFloat(this.end - this.start).toFixed(5)
+      })
     }
   }
 }

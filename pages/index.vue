@@ -1,7 +1,7 @@
 <template>
   <div class="m-8">
-    <Video :end="end" :start="start" />
-    <DraggableBar @end="end = $event" @start="start = $event" />
+    <Video :interval="interval" />
+    <DraggableBar @interval="interval = $event" />
   </div>
 </template>
 
@@ -16,8 +16,7 @@ export default {
   },
   data() {
     return {
-      end: 0,
-      start: 0
+      interval: {}
     }
   }
 }

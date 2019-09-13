@@ -8,7 +8,7 @@
       @timeupdate="time()"
       @ended="ended()"
     ></video>
-    <p>Start : {{ startSec }} secs, End: {{ endSec }} secs</p>
+    <p>Start : {{ startSec }} secs, End: {{ endSec }} secs,</p>
   </div>
 </template>
 
@@ -16,12 +16,8 @@
 export default {
   components: {},
   props: {
-    end: {
-      type: Number,
-      default: null
-    },
-    start: {
-      type: Number,
+    interval: {
+      type: Object,
       default: null
     }
   },
@@ -32,24 +28,25 @@ export default {
   },
   computed: {
     startSec() {
-      return parseFloat(this.start * this.duration).toFixed(2)
+      return parseFloat(this.interval.start * this.duration).toFixed(2)
     },
     endSec() {
-      return parseFloat(this.end * this.duration).toFixed(2)
-    },
-    total() {
-      return this.endSec - this.startSec
+      return parseFloat(this.interval.end * this.duration).toFixed(2)
     }
   },
   watch: {
-    start: function(value, oldvalue) {
-      this.$refs.video.currentTime = this.startSec
-      if (this.total === this.total && value <= oldvalue) {
+    interval: function(value, oldValue) {
+      this.$refs.video.pause()
+      if (value.total === oldValue.total) {
+        this.$refs.video.currentTime = this.startSec
+        return
+      }
+      if (value.start !== oldValue.start) {
+        this.$refs.video.currentTime = this.startSec
+      }
+      if (value.end !== oldValue.end) {
         this.$refs.video.currentTime = this.endSec
       }
-    },
-    end: function() {
-      this.$refs.video.currentTime = this.endSec
     }
   },
   methods: {
