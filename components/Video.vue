@@ -4,34 +4,73 @@
       ref="video"
       src="~assets/video/cold.mp4"
       @click="playPause()"
-      @loadeddata="setDuration"
+      @loadeddata="setDuration()"
+      @timeupdate="time()"
+      @ended="ended()"
     ></video>
+    <p>Start : {{ startSec }} secs, End: {{ endSec }} secs</p>
   </div>
 </template>
 
 <script>
 export default {
   components: {},
+  props: {
+    end: {
+      type: Number,
+      default: null
+    },
+    start: {
+      type: Number,
+      default: null
+    }
+  },
   data() {
     return {
-      duration: 0,
-      currentTime: 0
+      duration: 0
+    }
+  },
+  computed: {
+    startSec() {
+      return parseFloat(this.start * this.duration).toFixed(2)
+    },
+    endSec() {
+      return parseFloat(this.end * this.duration).toFixed(2)
+    }
+  },
+  watch: {
+    end: function() {
+      this.$refs.video.currentTime = this.endSec
+    },
+    start: function() {
+      this.$refs.video.currentTime = this.startSec
     }
   },
   methods: {
     setDuration() {
       this.duration = this.$refs.video.duration
-      this.currentTime = this.$refs.video.currentTime
-      this.$emit('duration', this.duration)
-      this.$emit('currentTime', this.currentTime)
+      this.$refs.video.currentTime = this.startSec
     },
     playPause: function() {
       if (this.$refs.video.paused === true) {
+        if (this.$refs.video.currentTime >= this.endSec) {
+          this.$refs.video.currentTime = this.startSec
+        }
+        if (this.$refs.video.currentTime < this.startSec) {
+          this.$refs.video.currentTime = this.startSec
+        }
         this.$refs.video.play()
-        console.log(this.currentTime)
       } else {
         this.$refs.video.pause()
       }
+    },
+    time() {
+      if (this.$refs.video.currentTime >= this.endSec) {
+        this.$refs.video.pause()
+      }
+    },
+    ended() {
+      this.$refs.video.currentTime = this.startSec
     }
   }
 }

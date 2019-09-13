@@ -21,22 +21,15 @@
         <div class="child"></div>
       </vue-draggable-resizable>
     </div>
-    <p>TOTAL : {{ totalSec }} sec</p>
-    <p>Start: {{ startSec }} sec</p>
-    <p>End: {{ endSec }}sec</p>
   </div>
 </template>
 
 <script>
 const TOTAL_WIDTH = 600
-const INIT_WIDTH = 100
+const INIT_WIDTH = 200
 export default {
   props: {
     duration: {
-      type: Number,
-      default: null
-    },
-    currentTime: {
       type: Number,
       default: null
     }
@@ -48,34 +41,13 @@ export default {
       height: 0,
       x: 0,
       y: 0,
-      total: INIT_WIDTH / TOTAL_WIDTH,
       totalWidth: TOTAL_WIDTH,
-      start: this.currentTime,
-      end: 0
-    }
-  },
-  computed: {
-    totalPercent() {
-      return parseFloat(this.total * 100).toFixed(2)
-    },
-    startPercent() {
-      return parseFloat(this.start * 100).toFixed(2)
-    },
-    endPercent() {
-      return parseFloat(this.end * 100).toFixed(2)
-    },
-    totalSec() {
-      return parseFloat(this.total * this.duration).toFixed(2)
-    },
-    startSec() {
-      return parseFloat(this.start * this.duration).toFixed(2)
-    },
-    endSec() {
-      return parseFloat(this.end * this.duration).toFixed(2)
+      start: 0,
+      end: INIT_WIDTH / TOTAL_WIDTH
     }
   },
   mounted() {
-    console.log('yo')
+    this.startEnd()
   },
   methods: {
     onResize: function(x, y, width, height) {
@@ -94,6 +66,8 @@ export default {
     startEnd: function() {
       this.start = this.x / TOTAL_WIDTH
       this.end = (this.width + this.x) / TOTAL_WIDTH
+      this.$emit('start', this.start)
+      this.$emit('end', this.end)
     }
   }
 }
