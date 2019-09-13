@@ -31,25 +31,31 @@ export default {
     }
   },
   computed: {
+    interval() {
+      return {
+        end: parseFloat(this.end).toFixed(5),
+        start: parseFloat(this.start).toFixed(5),
+        total: parseFloat(this.end - this.start).toFixed(5)
+      }
+    },
     startSec() {
       return parseFloat(this.start * this.duration).toFixed(2)
     },
     endSec() {
       return parseFloat(this.end * this.duration).toFixed(2)
-    },
-    total() {
-      return this.endSec - this.startSec
     }
   },
   watch: {
-    start: function(value, oldvalue) {
-      this.$refs.video.currentTime = this.startSec
-      if (this.total === this.total && value <= oldvalue) {
+    interval: function(value, oldValue) {
+      if (value.total === oldValue.total) {
+        this.$refs.video.currentTime = this.startSec
+      }
+      if (value.start !== oldValue.start && value.end === oldValue.end) {
+        this.$refs.video.currentTime = this.startSec
+      }
+      if (value.end !== oldValue.end && value.start === oldValue.start) {
         this.$refs.video.currentTime = this.endSec
       }
-    },
-    end: function() {
-      this.$refs.video.currentTime = this.endSec
     }
   },
   methods: {
