@@ -1,6 +1,6 @@
 <template>
   <div class="m-8">
-    <Video :interval="interval" @videoSize="videoSize = $event" />
+    <Video :interval="interval" />
     <DraggableBar :dimension="dimension" @interval="interval = $event" />
   </div>
 </template>
@@ -17,7 +17,7 @@ export default {
   data() {
     return {
       interval: {},
-      videoSize: 0
+      videoWidth: 0
     }
   },
   computed: {
@@ -25,11 +25,7 @@ export default {
       return { TOTAL_WIDTH: 600, INIT_WIDTH: 200, TOTAL_HEIGHT: 50 }
     }
   },
-  methods: {
-    // responsive_WIDTH() {
-    //   if (windo)
-    // }
-  }
+  mounted() {}
 }
 </script>
 <style>

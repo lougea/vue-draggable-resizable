@@ -23,7 +23,8 @@ export default {
   },
   data() {
     return {
-      duration: 0
+      duration: 0,
+      videoWidth: 0
     }
   },
   computed: {
@@ -52,17 +53,17 @@ export default {
       }
     }
   },
-  mounted() {
-    console.log(this.$refs.video.clientWidth)
-  },
+
   methods: {
     // Fonction assignée à l'Event "loadeddata" de l'élement <video>, enregistre durée vidéo
     setDuration() {
       this.duration = this.$refs.video.duration
       this.$refs.video.currentTime = this.startSec
+      this.videoWidth = this.$refs.video.clientWidth
     },
     // Fonction assignée à l'Event "v-on:click" de l'élement <video>,détremine point de départ pour les actions play et pause
     playPause: function() {
+      this.observer()
       if (this.$refs.video.paused === true) {
         if (this.$refs.video.currentTime >= this.endSec) {
           this.$refs.video.currentTime = this.startSec
@@ -84,6 +85,16 @@ export default {
     // Fonction assignée à l'Event "ended de l'élement <video>,détremine point de départ pour relancer video (si fin video atteint)
     ended() {
       this.$refs.video.currentTime = this.startSec
+    },
+    observer() {
+      const myObserver = new ResizeObserver((entries) => {
+        for (let entry of entries) {
+          console.log(entry.contentRect.width)
+        }
+      })
+      myObserver.observe(this.$refs.video)
+
+      console.log('yo')
     }
   }
 }
