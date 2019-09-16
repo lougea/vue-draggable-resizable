@@ -1,7 +1,7 @@
 <template>
   <div class="m-8">
-    <Video :interval="interval" />
-    <DraggableBar @interval="interval = $event" />
+    <Video :interval="interval" @videoSize="videoSize = $event" />
+    <DraggableBar :dimension="dimension" @interval="interval = $event" />
   </div>
 </template>
 
@@ -16,16 +16,25 @@ export default {
   },
   data() {
     return {
-      interval: {}
+      interval: {},
+      videoSize: 0
     }
+  },
+  computed: {
+    dimension() {
+      return { TOTAL_WIDTH: 600, INIT_WIDTH: 200, TOTAL_HEIGHT: 50 }
+    }
+  },
+  methods: {
+    // responsive_WIDTH() {
+    //   if (windo)
+    // }
   }
 }
 </script>
-
 <style>
-/* Sample `apply` at-rules with Tailwind CSS
-.container {
-  @apply min-h-screen flex justify-center items-center text-center mx-auto;
+DraggableBAr {
+  height: 50;
+  width: 100%;
 }
-*/
 </style>

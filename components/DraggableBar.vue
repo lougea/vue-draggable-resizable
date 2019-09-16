@@ -2,13 +2,13 @@
   <div>
     <div
       :style="
-        `height: 50px; width: ${totalWidth}px; outline: 3px solid #F0E68C; position: relative;`
+        `height: ${totalHeight}px; width: ${totalWidth}px; outline: 3px solid #F0E68C; position: relative; margin:10px`
       "
     >
       <vue-draggable-resizable
         :w="width"
-        :h="50"
-        :x="0"
+        :h="totalHeight"
+        :x="x"
         :y="0"
         :axis="axis"
         :handles="['ml', 'mr']"
@@ -25,47 +25,50 @@
 </template>
 
 <script>
-const TOTAL_WIDTH = 600
-const INIT_WIDTH = 200
 export default {
   props: {
     duration: {
       type: Number,
       default: null
+    },
+    dimension: {
+      type: Object,
+      default: null
     }
   },
   data: function() {
     return {
+      width: this.dimension.INIT_WIDTH,
+      totalWidth: this.dimension.TOTAL_WIDTH,
+      totalHeight: this.dimension.TOTAL_HEIGHT,
       axis: 'x',
-      width: INIT_WIDTH,
-      height: 0,
       x: 0,
-      y: 0,
-      totalWidth: TOTAL_WIDTH,
       start: 0,
-      end: INIT_WIDTH / TOTAL_WIDTH
+      end: this.dimension.INIT_WIDTH / this.dimension.TOTAL_WIDTH
     }
   },
   mounted() {
     this.startEnd()
   },
   methods: {
-    onResize: function(x, y, width, height) {
+    // Fonction assignée à l'Event "resizing" (module : vue-draggable-resizable / installé en pluging)
+    onResize: function(x, _, width) {
       this.x = x
-      this.y = y
       this.width = width
-      this.height = height
-      this.total = (TOTAL_WIDTH - (TOTAL_WIDTH - width)) / TOTAL_WIDTH
+      this.total =
+        (this.dimension.TOTAL_WIDTH - (this.dimension.TOTAL_WIDTH - width)) /
+        this.dimension.TOTAL_WIDTH
       this.startEnd()
     },
-    onDrag: function(x, y) {
+    //Fonction assignée à l'Event "dragging" (module : vue-draggable-resizable / installé en pluging)
+    onDrag: function(x) {
       this.x = x
-      this.y = y
       this.startEnd()
     },
+    // Détermine point de départ "start", point de fin "end" et envoyer object interval ("start", "end", "total")
     startEnd: function() {
-      this.start = this.x / TOTAL_WIDTH
-      this.end = (this.width + this.x) / TOTAL_WIDTH
+      this.start = this.x / this.dimension.TOTAL_WIDTH
+      this.end = (this.width + this.x) / this.dimension.TOTAL_WIDTH
       this.$emit('interval', {
         start: this.start,
         end: this.end,
@@ -87,29 +90,10 @@ export default {
   border-radius: 50%;
   height: 14px;
   width: 14px;
-  box-model: border-box;
+
   -webkit-transition: all 300ms linear;
   -ms-transition: all 300ms linear;
   transition: all 300ms linear;
-}
-
-.handle-tl {
-  top: -14px;
-  left: -14px;
-  cursor: nw-resize;
-}
-
-.handle-tm {
-  top: -14px;
-  left: 50%;
-  margin-left: -7px;
-  cursor: n-resize;
-}
-
-.handle-tr {
-  top: -14px;
-  right: -14px;
-  cursor: ne-resize;
 }
 
 .handle-ml {
@@ -124,25 +108,6 @@ export default {
   margin-top: -7px;
   right: -14px;
   cursor: e-resize;
-}
-
-.handle-bl {
-  bottom: -14px;
-  left: -14px;
-  cursor: sw-resize;
-}
-
-.handle-bm {
-  bottom: -14px;
-  left: 50%;
-  margin-left: -7px;
-  cursor: s-resize;
-}
-
-.handle-br {
-  bottom: -14px;
-  right: -14px;
-  cursor: se-resize;
 }
 
 .handle-tl:hover,

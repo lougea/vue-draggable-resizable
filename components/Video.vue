@@ -27,14 +27,17 @@ export default {
     }
   },
   computed: {
+    // Définit point de départ en secondes (string)
     startSec() {
       return parseFloat(this.interval.start * this.duration).toFixed(2)
     },
+    // Définit point de fin en secondes (string)
     endSec() {
       return parseFloat(this.interval.end * this.duration).toFixed(2)
     }
   },
   watch: {
+    // Watcher sur props (objet : interval), détermine image-poster lors de l'event resizing et dragging
     interval: function(value, oldValue) {
       this.$refs.video.pause()
       if (value.total === oldValue.total) {
@@ -49,11 +52,16 @@ export default {
       }
     }
   },
+  mounted() {
+    console.log(this.$refs.video.clientWidth)
+  },
   methods: {
+    // Fonction assignée à l'Event "loadeddata" de l'élement <video>, enregistre durée vidéo
     setDuration() {
       this.duration = this.$refs.video.duration
       this.$refs.video.currentTime = this.startSec
     },
+    // Fonction assignée à l'Event "v-on:click" de l'élement <video>,détremine point de départ pour les actions play et pause
     playPause: function() {
       if (this.$refs.video.paused === true) {
         if (this.$refs.video.currentTime >= this.endSec) {
@@ -67,11 +75,13 @@ export default {
         this.$refs.video.pause()
       }
     },
+    // Fonction assignée à l'Event "timeupdate" de l'élement <video>, enregistre durée vidéo, détermine point de fin et lance action pause
     time() {
       if (this.$refs.video.currentTime >= this.endSec) {
         this.$refs.video.pause()
       }
     },
+    // Fonction assignée à l'Event "ended de l'élement <video>,détremine point de départ pour relancer video (si fin video atteint)
     ended() {
       this.$refs.video.currentTime = this.startSec
     }
